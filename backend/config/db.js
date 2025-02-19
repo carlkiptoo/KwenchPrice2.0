@@ -1,31 +1,15 @@
-import express from 'express';
-import Drink from '../models/Drink.js';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const router = express.Router();
+dotenv.config();
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log("Connected to MongoDB");
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+        process.exit(1);
+    }
+}
 
-//GEt all drinks
-router.get('/', async (req, res) => {
-    const drinks = await Drink.find();
-    res.json(drinks);
-});
-
-//Add a new drink
-router.post('/', async (req, res) => {
-    const newDrink = new Drink(req.body)
-    await newDrink.save()
-    res.status(201).json(newDrink)
-});
-
-//Update Drink
-router.put('/:id', async (req, res) => {
-    await Drink.findByIdAndUpdate(req.params.id, req.body);
-    res.sendStatus(200);
-})
-
-//Delete drink
-router.delete('/:id', async (req, res) => {
-    await Drink.findByIdAndDelete(req.params.id);
-    res.sendStatus(200);
-});
-
-export default router;
+export default connectDB;
