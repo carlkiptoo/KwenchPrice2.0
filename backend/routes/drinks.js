@@ -17,9 +17,19 @@ router.get('/', async (req, res) => {
 
 //Add a new drink
 router.post('/', async (req, res) => {
-    const newDrink = new Drink(req.body)
-    await newDrink.save()
-    res.status(201).json(newDrink)
+    try {
+        if (!Array.isArray(req.body)) {
+            const drinks = await Drink.insertMany(req.body);
+            return res.status(201).json({message: 'Drinks added', drinks});
+        }
+         const drink = new Drink(req.body);
+         await drink.save();
+         return res.status(201).json({message: 'Single drink added',drink});
+    } catch (err) {
+        console.error('Error adding drink:', err);
+        res.status(500).send('Error adding drink');
+    }
+    
 });
 
 //Update Drink
