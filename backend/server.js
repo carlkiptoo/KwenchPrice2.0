@@ -18,7 +18,10 @@ app.use(cors())
 
 connectDB();
 
-app.use('/drinks', drinksRouter);
+app.use('/drinks', (req, res, next) => {
+    req.io = io;
+    next();
+}, drinksRouter);
 
 io.on('connection', (socket) => {
     console.log('a user connected');

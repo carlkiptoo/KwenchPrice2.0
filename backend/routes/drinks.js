@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
                 return res.status(400).json({message: 'Invalid data: All drinks must have a name, price, and quantity'});
             }
             const drinks = await Drink.insertMany(validDrinks);
+            req.io.emit('drinkAdded', drinks);
             return res.status(201).json({message: 'Drinks added', drinks});
         }
         
@@ -48,6 +49,7 @@ router.post('/', async (req, res) => {
             category,
          });
          await drink.save();
+         req.io.emit('drinkAdded', drink);
          return res.status(201).json({message: 'Single drink added',drink});
     } catch (err) {
         console.error('Error adding drink:', err);
@@ -71,7 +73,7 @@ router.put('/:id', async (req, res) => {
         if (!updatedDrink) {
             return res.status(404).json({message: 'Drink not found'});
         }
-
+        req.io.emit('drinkUpdated', updatedDrink);
         res.status(200).json({message: 'Drink updated', drink: updatedDrink});
 
     } catch (err) {
@@ -82,8 +84,20 @@ router.put('/:id', async (req, res) => {
 
 //Delete drink
 router.delete('/:id', async (req, res) => {
-    await Drink.findByIdAndDelete(req.params.id);
-    res.sendStatus(200);
+    try {
+        const deletedDrink = await Drink.findByIdAndDelete(req.params.id);
+
+        if (!deletedDrink) {
+            return res.status(404).json({ message: "Drink not found" });
+        }
+
+        req.io.emit("drinkDeleted", req.params.id); // 🔥 Emit WebSocket event
+        res.status(200).json({ message: "Drink deleted" });
+
+    } catch (err) {
+        console.error('Error deleting drink:', err);
+        res.status(500).json({ error: "Error deleting drink" });
+    }
 });
 
 export default router;

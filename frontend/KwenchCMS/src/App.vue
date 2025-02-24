@@ -4,7 +4,6 @@
 
 <template>
   <div class="app-container">
-    <h1>Drink Management Admin Panel</h1>
     <router-view />
   </div>
 
