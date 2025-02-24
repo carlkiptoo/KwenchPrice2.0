@@ -18,11 +18,35 @@ router.get('/', async (req, res) => {
 //Add a new drink
 router.post('/', async (req, res) => {
     try {
-        if (!Array.isArray(req.body)) {
-            const drinks = await Drink.insertMany(req.body);
+        console.log("Received body", req.body);
+        //Check if the request body is an array
+        if (Array.isArray(req.body)) {
+            console.log("Processing as bulk insert")
+            //Validate drinks before inserting
+            const validDrinks = req.body.filter(drink =>
+                drink.name && drink.quantity !== undefined && drink.price !== undefined && drink.category
+            );
+
+            if (validDrinks.length === 0) {
+                return res.status(400).json({message: 'Invalid data: All drinks must have a name, price, and quantity'});
+            }
+            const drinks = await Drink.insertMany(validDrinks);
             return res.status(201).json({message: 'Drinks added', drinks});
         }
-         const drink = new Drink(req.body);
+        
+
+        const {name, price, quantity, category} = req.body;
+
+        if (!name || !price || !quantity) {
+            return res.status(400).json({message: 'Invalid data: All drinks must have a name, price, and quantity'});
+        }
+
+         const drink = new Drink({
+            name,
+            quantity: Number(quantity),
+            price: Number(price),
+            category,
+         });
          await drink.save();
          return res.status(201).json({message: 'Single drink added',drink});
     } catch (err) {

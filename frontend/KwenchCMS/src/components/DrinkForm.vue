@@ -3,6 +3,7 @@
         <input v-model="name" placeholder="Drink name" type="text" required>
         <input v-model="price" placeholder="Price" type="number" required>
         <input v-model="quantity" placeholder="Quantity" type="number" required>
+        <input v-model="category" placeholder="Category" type="text" required>
         <button type="submit">Add Drink</button>
     </form>
 </template>
@@ -15,12 +16,14 @@ const drinksStore = useDrinksStore();
 const name = ref('');
 const price = ref('');
 const quantity = ref('');
+const category = ref('');
 
 const handleSubmit = () => {
-    drinksStore.addDrink({ name: name.value, price: price.value, quantity: quantity.value });
+    drinksStore.addDrink({ name: name.value, price: price.value, quantity: quantity.value, category: category.value });
     name.value = '';
     price.value = '';
     quantity.value = '';
+    category.value = '';
 }
 
 </script>
