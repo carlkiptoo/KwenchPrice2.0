@@ -1,5 +1,13 @@
 <script setup>
 import DrinkList from './components/DrinkList.vue';
+// import { useDrinksStore } from '@/store/drinksStore';
+// import { onMounted } from 'vue';
+
+// const drinksStore = useDrinksStore();
+
+// onMounted(() => {
+//     drinksStore.fetchDrinks();
+// })
 </script>
 
 <template>

@@ -22,15 +22,26 @@ export const useDrinksStore = defineStore('drinks', () => {
         try {
             const response = await axios.post('http://localhost:5000/drinks', drink);
             drinks.value.push(response.data.drink);
-            socket.emit('drinkAdded', response.data.drink);
+           
         } catch (error) {
             console.error("Error adding drink:", error);
         }
     };
 
-    socket.on('drinkAdded', (newDrink) => {
-        drinks.value.push(newDrink)
-    });
+    const deleteDrink = async (id) => {
+        try {
+            await axios.delete(`http://localhost:5000/drinks/${id}`);
+            drinks.value = drinks.value.filter(drink => drink._id !== id);
+        } catch (error) {
+            console.error("Error deleting drink:", error);
+        }
+    }
 
-    return { drinks, fetchDrinks, addDrink };
+    fetchDrinks();
+
+    // socket.on('drinkAdded', (newDrink) => {
+    //     drinks.value.push(newDrink)
+    // });
+
+    return { drinks, fetchDrinks, addDrink, deleteDrink };
 })
