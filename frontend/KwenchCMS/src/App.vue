@@ -1,17 +1,11 @@
 <script setup>
 import DrinkList from './components/DrinkList.vue';
-// import { useDrinksStore } from '@/store/drinksStore';
-// import { onMounted } from 'vue';
-
-// const drinksStore = useDrinksStore();
-
-// onMounted(() => {
-//     drinksStore.fetchDrinks();
-// })
+import DrinkForm from './components/DrinkForm.vue';
 </script>
 
 <template>
-<DrinkList />
+<!-- <DrinkList /> -->
+<DrinkForm />
 </template>
 
 <style scoped>
