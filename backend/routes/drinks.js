@@ -58,8 +58,26 @@ router.post('/', async (req, res) => {
 
 //Update Drink
 router.put('/:id', async (req, res) => {
-    await Drink.findByIdAndUpdate(req.params.id, req.body);
-    res.sendStatus(200);
+    try {
+        const {id} = req.params;
+        const {name, price, quantity, category} =req.body
+
+        const updatedDrink = await Drink.findByIdAndUpdate(
+            id, 
+            { name, quantity: Number(quantity), price: Number(price), category},
+            {new: true, runValidators: true}
+        );
+
+        if (!updatedDrink) {
+            return res.status(404).json({message: 'Drink not found'});
+        }
+
+        res.status(200).json({message: 'Drink updated', drink: updatedDrink});
+
+    } catch (err) {
+        console.error('Error updating drink:', err);
+        res.status(500).send({message: 'Error updating drink', error: err.message});
+    }
 })
 
 //Delete drink
