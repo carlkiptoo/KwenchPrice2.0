@@ -11,9 +11,10 @@ export const useDrinksStore = defineStore('drinks', () => {
     const fetchDrinks = async () => {
         try {
             const response = await axios.get("http://localhost:5000/drinks");
-            drinks.value = response.data;
+            drinks.value = response.data || [];
         } catch (error) {
             console.error("Error fetching drinks:", error);
+            drinks.value = [];
         }
     };
 

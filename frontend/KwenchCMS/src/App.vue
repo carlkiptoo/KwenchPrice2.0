@@ -1,9 +1,9 @@
 <script setup>
-
+import DrinkList from './components/DrinkList.vue';
 </script>
 
 <template>
-
+<DrinkList />
 </template>
 
 <style scoped>
